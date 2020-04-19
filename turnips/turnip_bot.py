@@ -1,8 +1,9 @@
-import os
-import time
-import sched
-import discord
 import datetime
+import os
+import sched
+import time
+
+import discord
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,21 +13,24 @@ client = discord.Client()
 
 PRICES = dict()
 
+
 @client.event
 async def on_ready():
     print(f"{client.user} has connected to Discord!")
     channel = client.get_channel(696558030870806608)
-    await channel.send('hello')
+    await channel.send("hello")
 
 
 async def send_prices():
     channel = client.get_channel(696558030870806608)
 
-    formatted_msg = "" 
+    formatted_msg = ""
     for key in PRICES:
         formatted_msg += f"{key}'s price is: {PRICES[key]}\n"
     if formatted_msg == "":
-        await channel.send("Nobody has published their updated turnip prices yet! You could be the first! ;)")
+        await channel.send(
+            "Nobody has published their updated turnip prices yet! You could be the first! ;)"
+        )
     else:
         await channel.send(formatted_msg)
 
@@ -34,7 +38,7 @@ async def send_prices():
 @client.event
 async def on_message(msg):
 
-    if msg.content.startswith('t'):  ## FIXME
+    if msg.content.startswith("t"):  ## FIXME
         await send_prices()
 
     elif msg.content.startswith("p "):  ## FIXME
@@ -59,9 +63,10 @@ async def time_check():
         seconds = (now.replace(hour=12, minute=0, second=0) - now).total_seconds()
         print("garbage", seconds)
     else:
-        seconds = ((now + datetime.timedelta(days=1)).replace(hour=8, minute=0, second=0) - now).total_seconds()
+        seconds = (
+            (now + datetime.timedelta(days=1)).replace(hour=8, minute=0, second=0) - now
+        ).total_seconds()
         print("slimepit", seconds)
-
 
     # create a scheduler
     s = sched.scheduler(time.perf_counter, time.sleep)
@@ -69,7 +74,7 @@ async def time_check():
     args = (clear_prices(),)
     # enter the command and arguments into the scheduler
     s.enter(seconds, 1, client.loop.create_task, args)
-    s.run() # run the scheduler, will block the event loop
+    s.run()  # run the scheduler, will block the event loop
 
 
 async def clear_prices():
